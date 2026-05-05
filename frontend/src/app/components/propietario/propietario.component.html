@@ -1,0 +1,140 @@
+<div id="hero" class="main-container">
+	<div class="data-container">
+		<aside class="owner-panel">
+			<div class="owner-header">
+				<h2>Perfil del Propietario</h2>
+			<div id="foto-perfil" class="profile-pic">
+				<img src="/assets/foto-propietario.jpg" alt="Foto del propietario">
+			</div>
+			</div>
+
+			<div class="datos-personales">
+				<h3>Datos Personales</h3>
+				<p><strong>Nombre:</strong> {{nombre}}</p>
+				<p *ngFor="let telefono of telefonos">
+					<strong>Teléfono:</strong> {{telefono.numero}}
+				</p>
+			</div>
+
+			<div class="estadisticas">
+				<h3>Estadísticas</h3>
+				<ul>
+					<li><strong>Pensiones activas:</strong> {{ pensiones.length }}</li>
+					<li><strong>Tiempo usando la app:</strong> {{ tiempo }}</li>
+					<li><strong>Reservas este mes:</strong> {{reservas.length}}</li>
+				</ul>
+			</div>
+		</aside>
+		<div class="owner-content">
+			<h4 id="h4-mis-pensiones">Mis Pensiones</h4>
+			<section id="pensiones" class="pensiones-list">
+				<div class="pension-card" *ngFor="let pension of pensiones">
+					<h5 class="pension-id">ID: {{ pension.id }}</h5>
+					<span *ngIf="pension.esAmbienteFamiliar" class="item-pension">Ambiente familiar</span>
+					<span *ngIf="pension.esCupoCompleto" class="item-pension">Cupo completo</span>
+					<!-- <span class="item-pension">{{ pension.tipo }}</span> -->
+					<p class="pension-descripcion">{{ pension.descripcion }}</p>
+					<p class="pension-direccion">{{ pension.direccion }}</p>
+					<div class="btn-pension">
+						<i (click)="infoPension(pension.id)" class="bi bi-info-circle"></i>
+						<i (click)="editPension(pension)" class="bi bi-pencil-square"></i>
+						<i (click)="deletePension(pension.id)" class="bi bi-trash"></i>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+	<div class="modal" [class.show]="isEditing && pensionSelected">
+		<div class="modal-content">
+			<div class="input-modal">
+				<h2>Editar pension</h2>
+				<div class="field">
+					<label for="cupocompleto">Cupo completo</label>
+					<input [(ngModel)]="pensionSelected.esCupoCompleto" name="cupocompleto" type="checkbox">
+				</div>
+				<div class="field">
+					<label for="ambientefamiliar">Ambiente Familiar</label>
+					<input [(ngModel)]="pensionSelected.esAmbienteFamiliar" name="ambientefamiliar" type="checkbox">
+				</div>
+				<div class="field">
+					<label for="descripcion">Descripcion</label>
+					<textarea [(ngModel)]="pensionSelected.descripcion" name="descripcion" rows="4" cols="50" required></textarea>
+				</div>
+			</div>
+			<div class="btn-modal">
+				<button (click)="guardarCambios()">Guardar</button>
+				<button (click)="cancelarCambios()">Cancelar</button>
+			</div>
+		</div>
+	</div>
+	<div class="modal" [class.show]="isAdding">
+  		<div class="modal-content">
+			<div class="input-modal">
+				<h2>Nueva pensión</h2>
+				<div class="field">
+					<label for="">Cupo completo? </label>
+					<input [(ngModel)]="newPension.esCupoCompleto" name="cupoCompleto" type="checkbox">
+				</div>
+				<div class="field">
+					<label for="">Ambiente familiar? </label>
+					<input [(ngModel)]="newPension.esAmbienteFamiliar" name="ambienteFamiliar" type="checkbox">
+				</div>
+				<div class="field">
+					<label for="descripcion">Descripción: </label>
+					<textarea [(ngModel)]="newPension.descripcion" name="descripcion" rows="4" cols="50" required></textarea>
+				</div>
+				<div class="field">
+					<label for="ciudad">Ciudad: </label>
+					<select
+						[(ngModel)]="idCiudad"
+						name="ciudad"
+						required
+						(change)="cargarBarrios(idCiudad)"
+					>
+						<option [ngValue]="0">Selecciona ciudad</option>
+						<option *ngFor="let ciudad of ciudades" [ngValue]="ciudad.id">{{ ciudad.nombre }}</option>
+    				</select>
+				</div>
+				<div class="field">
+					<label for="barrio">Barrio:</label>
+					<select
+						[(ngModel)]="newPension.barrio_id"
+						name="barrio"
+						required
+						[disabled]="!barrios.length"
+					>
+						<option [ngValue]="0">Selecciona barrio</option>
+						<option *ngFor="let barrio of barrios" [ngValue]="barrio.id">{{ barrio.nombre }}</option>
+					</select>
+				</div>
+				<div class="field">
+					<label for="tipopropiedad">Tipo de propiedad:</label>
+					<select
+						[(ngModel)]="newPension.tipopropiedad_id"
+						name="barrio"
+						required
+						[disabled]="!tiposdePropiedad.length"
+					>
+						<option [ngValue]="0">Selecciona</option>
+						<option *ngFor="let tipo of tiposdePropiedad" [ngValue]="tipo.id">{{ tipo.nombre }}</option>
+					</select>
+				</div>
+				<div class="field">
+					<label for="direccion">Direccion:</label>
+					<input [(ngModel)]="newPension.direccion" name="direccion" type="textarea" required>
+				</div>
+				<div class="btn-modal">
+					<button type="submit" (click)="guardarNuevo()">Guardar</button>
+					<button type="submit" (click)="isAdding = false">Cancelar</button>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="btn-container">
+		<div class="agregar_pension" (click)="abrirModalAdding()" >
+			<p>Añadir pension</p>
+			<i class="bi bi-house-add"></i>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,67 @@
+<div id="hero">
+  <div class="container">
+    <div class="logo">
+      <a routerLink="/home">
+        <img src="/assets/icon128px.png" alt="Logo Click2Book" />
+      </a>
+      <h1>Click2Book</h1>
+    </div>
+  
+    <h1>Crear una nueva cuenta</h1>
+  
+    <form (ngSubmit)="register()">
+      <div class="form-group">
+        <div>
+          <i class="bi bi-person"></i>
+          <input type="text" name="nombre" [(ngModel)]="nombre" placeholder="Nombre" required />
+        </div>
+        <div>
+          <i class="bi bi-person"></i>
+          <input type="text" name="apellido" [(ngModel)]="apellido"placeholder="Apellido" required />
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <div>
+          <i class="bi bi-calendar2-date"></i>
+          <input
+            [type]="fechaInputType"
+            name="fechaNacimiento"
+            [(ngModel)]="fechaNacimiento"
+            placeholder="Fecha de nacimiento"
+            (mouseenter)="cambiarTipo('date')"
+            (mouseleave)="restaurarTipo()"
+            required
+          />
+        </div>
+        
+        <div>
+          <i class="bi bi-envelope-at"></i>
+          <input type="email" name="correo" [(ngModel)]="correo" placeholder="Correo" required />
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <div>
+          <i class="bi bi-key-fill"></i>
+          <input type="password" name="contrasena" [(ngModel)]="contrasena" placeholder="Contraseña" required />
+        </div>
+        <div>
+          <i class="bi bi-key-fill"></i>
+          <input type="password" name="confirmarContrasena" [(ngModel)]="confirmarContrasena" placeholder="Confirmar contraseña" required />
+        </div>
+      </div>
+      <div class="Tipo1">
+        <select name="tipo" [(ngModel)]="rol" id="">
+            <option value=2 selected>Estudiante</option>
+            <option value=3>Arrendador</option>
+            <option value=1>Administrador</option>
+        </select>
+      </div>
+      <div id="botones">
+        <button id="btn-registro" type="submit">Registrarse</button>
+      </div>
+    </form>
+  </div>
+</div>
+

@@ -1,0 +1,32 @@
+<main>
+  <section id="datos">
+    <div id="formulario">
+      <div id="logo">
+        <a routerLink="/home">
+          <img src="/assets/icon128px.png" alt="Logo Click2Book" />
+        </a>
+        <h1>Click2Book</h1>
+      </div>
+
+      <form (ngSubmit)="login()">
+        <div id="name" class="dato">
+          <input type="email" name="email" [(ngModel)]="email" placeholder="Email" required />
+        </div>
+        <div id="password" class="dato">
+          <input type="password" name="password" [(ngModel)]="password" placeholder="Contraseña" required />
+        </div>
+        <div id="botones">
+          <button id="btn-login" type="submit">Iniciar sesión</button>
+        </div>
+      </form>
+
+      <a id="inicio-google" href="#"><i class="bi bi-google"></i><p>Inicia con Google</p></a>
+      <p>¿No tienes una cuenta? </p>
+      <a id="registro"routerLink="/registro">Registrate ya</a>
+    </div>
+  </section>
+
+  <section id="imagen">
+    <div id="fondo"></div>
+  </section>
+</main>

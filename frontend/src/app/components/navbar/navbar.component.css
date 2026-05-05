@@ -1,0 +1,44 @@
+.nav-links {
+    gap: 20px;
+    display: flex;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #6f6158;
+    list-style: none;
+}
+
+nav a i, nav a p {
+    font-size: 24px;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+}
+
+.logo img {
+    width: 40px;
+    margin-right: 10px;
+}
+
+nav li {
+    display: inline;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: #e0dad5;
+    text-decoration: underline;
+}

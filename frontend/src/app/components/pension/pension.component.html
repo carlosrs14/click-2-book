@@ -1,0 +1,110 @@
+<div class="container">
+    <div class="pension-card">
+        <div class="pension-items">
+            <h1>Id: {{pension.id}}</h1>
+            <p>Dirección: {{pension.direccion}}</p>
+            <p>Descripción: {{pension.descripcion}}</p>
+            <p *ngIf="pension.esAmbienteFamiliar">Es ambiente familiar</p>
+            <p *ngIf="pension.esCupoCompleto">Es cupo completo</p>
+        </div>
+        <div class="pension-btn">
+            <i (click)="abrirModalFotos()" class="bi bi-image"></i>
+            <i (click)="abrirModalCrear()" class="bi bi-house-add-fill"></i>
+        </div>
+    </div>
+    <div class="data-container">
+        <div class="title">
+            <h1>Cuartos Disponibles</h1>
+        </div>
+        <div class="cuartos-container">
+            <div *ngFor="let cuarto of cuartos" class="cuarto">
+                <div class="datos-cuarto">
+                    <p>Id: {{cuarto.id}}</p>
+                    <p>Descripción: {{cuarto.descripcion}}</p>
+                    <p>Capacidad: {{cuarto.capacidad}}</p>
+                    <p *ngIf="cuarto.tieneAire">Tiene aire</p>
+                    <p>Valor Mensual: {{cuarto.valorMensual}}</p>
+                </div>
+                <div class="btn-cuarto">
+                    <i (click)="abrirModalEditar(cuarto)" class="bi bi-pencil-square"></i>
+                    <i (click)="borrarCuarto(cuarto.id)" class="bi bi-trash"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="modal-crear" [class.show]="isCreating">
+        <div class="modal-content">
+            <h1>Añada un cuarto</h1>
+            <div class="input-modal">
+                <div class="field">
+                    <label for="descripcion">Descripción: </label>
+                    <input [(ngModel)]="provisionalCuarto.descripcion" type="text" name="descripcion">
+                </div>
+                
+                <div class="field">
+                    <label for="capacidad">Capacidad: </label>
+                    <input [(ngModel)]="provisionalCuarto.capacidad" min="0" type="number" name="capacidad">
+                </div>
+                <div class="field-aire">  
+                    <label for="tieneAire">Tiene aire: </label>
+                    <input [(ngModel)]="provisionalCuarto.tieneAire" type="checkbox" name="tienaire">
+                </div>
+                <div class="field">
+                    
+                    <label for="valorMensual">Valor mensual: </label>
+                    <input [(ngModel)]="provisionalCuarto.valorMensual" min="0" type="number" name="valormensual">
+                </div>
+                <div class="btn-modal">
+                    <button (click)="crearCuarto()" type="button">Añadir</button>
+                    <button (click)="cerrarModalAddCuarto()" type="button">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="add-imagen" [class.show]="isAddingFotos">
+        <div class="modal-content">
+            <h1>Añada una imagen</h1>
+            <div class="input-modal">
+                <div class="field">
+                    <input (change)="onImagenSeleccionada($event)" type="file" name="imagen" id="imagen">
+                </div>
+                <div class="btn-modal">
+                    <button (click)="cargarImagen()" type="button">Aceptar</button>
+                    <button (click)="cerrarModalAddFoto()" type="button">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-editar" [class.show]="isEditing">
+        <div class="modal-content">
+            <h1>Edite un cuarto</h1>
+            <div class="input-modal">
+                <div class="field">
+                    <label for="descripcion">Descripción: </label>
+                    <input [(ngModel)]="editCuarto.descripcion" type="text" name="descripcion">
+                </div>
+                
+                <div class="field">
+                    <label for="capacidad">Capacidad: </label>
+                    <input [(ngModel)]="editCuarto.capacidad" min="0" type="number" name="capacidad">
+                </div>
+                <div class="field-aire">
+                    
+                    <label for="tieneAire">Tiene aire: </label>
+                    <input [(ngModel)]="editCuarto.tieneAire" type="checkbox" name="tienaire">
+                </div>
+                <div class="field">
+                    
+                    <label for="valorMensual">Valor mensual: </label>
+                    <input [(ngModel)]="editCuarto.valorMensual" min="0" type="number" name="valormensual">
+                </div>
+                <div class="btn-modal">
+                    <button (click)="updateCuarto()" type="button">Aceptar</button>
+                    <button (click)="cerrarModalEdit()" type="button">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

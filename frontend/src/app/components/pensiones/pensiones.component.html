@@ -1,0 +1,110 @@
+<div id="hero">
+    <section id="filters">
+        <div id="filter-inputs">
+          <div class="filter-select">
+            <select [(ngModel)]="tipoSeleccionado">
+              <option selected value="0">Todos</option>
+              <option *ngFor="let tipo of tiposPropiedad" [value]="tipo.id">{{tipo.nombre}}</option>
+            </select>
+          </div>
+          <div class="filter-select">
+            <select [(ngModel)]="barrioSeleccionado">
+              <option selected value="0">Todos</option>
+              <option *ngFor="let barrio of barrios" [value]="barrio.id">{{barrio.nombre}}</option>
+            </select>
+          </div>
+          <div class="filter-number">
+            <input type="number" [(ngModel)]="precioMinimo" placeholder="$ mínimo" min="0" />
+          </div>
+          <div class="filter-number">
+            <input type="number" [(ngModel)]="precioMaximo" placeholder="$ máximo" min="{{precioMinimo}}" />
+          </div>
+          <div class="filter-check">
+            <input type="checkbox" [(ngModel)]="cupoCompleto" id="cupoCompleto" />
+            <label for="cupoCompleto">Cupo completo</label>
+          </div>
+          <div class="filter-check">
+            <input type="checkbox" [(ngModel)]="ambienteFamiliar" id="ambienteFamiliar" />
+            <label for="ambienteFamiliar">Ambiente familiar</label>
+          </div>
+          <div class="filter-check">
+            <input type="checkbox" [(ngModel)]="individual" id="individual" />
+            <label for="individual">Individual</label>
+          </div>
+          <div class="filter-check">
+            <input type="checkbox" [(ngModel)]="aire" id="aire" />
+            <label for="aire">Aire acondicionado</label>
+          </div>
+        </div>
+  
+        <div id="filter-btn">
+          <button type="submit" (click)="filtrarPensiones()">Buscar</button>
+          <button type="reset" (click)="restablecerFiltros()">Restablecer filtros</button>
+        </div>
+    </section>
+  
+  <section id="pensiones">
+    <div *ngFor="let pension of pensiones" class="pension-card">
+      <div class="pension-image-container">
+        <div id="carousel{{ pension.id }}" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div *ngFor="let url of pension.images; let i = index" class="carousel-item" [class.active]="i === 0">
+              <img [src]="url" class="d-block w-100 pension-image" alt="Imagen de pensión"/>
+            </div>
+            <div *ngIf="pension.images.length === 0"class="carousel-item active">
+              <img [src]="imagen" class="d-block w-100 pension-image" alt="Imagen por defecto"/>
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" [attr.data-bs-target]="'#carousel' + pension.id" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next"type="button" [attr.data-bs-target]="'#carousel' + pension.id" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        </div>
+      </div>
+      <div class="pension-buttons mt-3 text-center">
+        <p>{{pension.direccion}}</p>
+        <p>{{pension.descripcion}}</p>
+        <button (click)="abrirModal(pension.id)" class="btn btn-success">Reservar</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal" [class.show]="mostrarModal">
+    <div class="modal-content">
+      <h3>Reservar cuartos</h3>
+
+      <label>Fecha inicio:</label>
+      <input type="date" [(ngModel)]="fechaInicio">
+
+      <label>Fecha fin:</label>
+      <input type="date" [(ngModel)]="fechaFin">
+
+      <label>Cantidad de pensionados:</label>
+      <input type="number" [(ngModel)]="cantidadPensionados" min="0">
+
+      <div *ngIf="cuartos.length > 0">
+        <h4 id="cuartos-dispnibles">Cuartos disponibles:</h4>
+        <ul>
+          <li *ngFor="let cuarto of cuartos">{{ cuarto.descripcion }} <button (click)="reservar(cuarto.id)" type="submit">Reservar</button> </li>
+        </ul>
+      </div>
+
+      <button (click)="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
+  <div id="paginacion">
+    <div><a href="#" class="pag-prev"><i class="bi bi-arrow-left-short"></i></a></div>
+      <div class="pagina-numeros">
+        <span>1</span>
+        <span class="pagina-activa">2</span>
+        <span>3</span>
+        <span>...</span>
+        <span>10</span>
+      </div>
+      <div><a href="#" class="pag-sig"><i class="bi bi-arrow-right-short"></i></a></div>
+    </div>
+</div> 

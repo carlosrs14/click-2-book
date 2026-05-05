@@ -1,0 +1,19 @@
+<div class="user-container">
+    <div class="user-data">
+        <h2>Correo:</h2>
+        <p>{{ correo }}</p>
+        <h2>Nombre:</h2>
+        <p *ngIf="!editando">{{ nombre }}</p>
+        <input *ngIf="editando" [(ngModel)]="nuevoNombre" type="text" placeholder="Nuevo nombre" />
+        <h2>Rol:</h2>
+        <p>{{ rol }}</p>
+        <a *ngIf="rol == 'propietario'" routerLink="/propietario">Mis pensiones</a>
+    </div>
+    <div class="user-buttons">
+        <button *ngIf="!editando" (click)="editar()">Editar</button>
+        <button *ngIf="editando" (click)="guardar()">Guardar</button>
+        <button *ngIf="editando" (click)="cancelar()">Cancelar</button>
+        <button (click)="eliminar()" type="button">Eliminar Cuenta</button>
+        <button (click)="logout()" type="button">Cerrar Sesión</button>
+    </div>
+</div>

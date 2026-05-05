@@ -1,0 +1,24 @@
+@startuml Diagrama
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor Usuario 
+actor UsuarioInvitado
+actor Administrador
+
+UsuarioInvitado --|> Usuario
+Administrador --|> Usuario
+
+rectangle Click2book {
+  Usuario -- (Iniciar sesión)
+  (Registrar cuenta) --> (Iniciar sesión) : <<include>>
+  (Editar perfil) --> (Iniciar sesión) : <<extends>>
+  (Eliminar cuenta) --> (Iniciar sesión) : <<extends>>
+  (Cerrar sesión) --> (Iniciar sesión) : <<extends>>
+
+  UsuarioInvitado -- (Registrar cuenta)
+  UsuarioInvitado -- (Ver página principal)
+  Administrador -- (Iniciar sesión)
+}
+@enduml
