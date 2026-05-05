@@ -7,12 +7,13 @@ if [ ! -d "vendor" ]; then
     composer install --no-interaction
 fi
 
-# Create .env if it doesn't exist
-if [ ! -f ".env" ]; then
-    echo "Creating .env file..."
-    cp .env.example .env
-    php artisan key:generate
-    # We might need jwt secret
+if [ -z "$APP_KEY" ]; then
+    echo "Generating APP_KEY..."
+    php artisan key:generate --force
+fi
+
+if [ -z "$JWT_SECRET" ]; then
+    echo "Generating JWT_SECRET..."
     php artisan jwt:secret --force || true
 fi
 
