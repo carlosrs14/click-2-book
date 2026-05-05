@@ -1,37 +1,62 @@
-<div id="container">
-  <section class="hero text-center py-5 bg-cover">
-    <div class="main-container">
-      <h1 class="display-4 font-weight-bold">Encuentra tu hogar ideal</h1>
-      <p class="lead">Rápido, seguro y sin complicaciones</p>
-      <a href="/registro" class="btn btn-primary btn-lg mt-3">Regístrate Gratis</a>
-      <p class="mt-2">¿Ya tienes cuenta? <a href="/login" class="text-light link-light"><u>Inicia sesión</u></a></p>
-    </div>
-  </section>
-
-  <section class="top-rated py-5  text-center">
-    <div class="container">
-      <h2 class="mb-4">Pensiones destacadas</h2>
-      <div class="row pension-list">
-        <div class="pension-card mb-4">
-          <div class="card shadow">
-            <div class="card-body">
-              <h5 class="card-title">Pensión Central</h5>
-              <p class="card-text">Barrio Centro · ★★★★☆</p>
-            </div>
-          </div>
+<div class="animate-fade-in-up">
+  <!-- Hero Section -->
+  <div class="hero min-h-[60vh] bg-base-200 rounded-box shadow-xl mb-12">
+    <div class="hero-content text-center">
+      <div class="max-w-2xl">
+        <h1 class="text-5xl font-heading font-extrabold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Encuentra tu hogar ideal</h1>
+        <p class="py-6 text-lg opacity-80">Rápido, seguro y sin complicaciones. Click2Book te ayuda a encontrar la pensión perfecta para tu estancia, ya sea por día, semana o mes.</p>
+        <div class="flex gap-4 justify-center">
+          <a routerLink="/registro" class="btn btn-primary btn-lg shadow-lg">Regístrate Gratis</a>
+          <a routerLink="/login" class="btn btn-outline btn-lg">Iniciar Sesión</a>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Featured Section -->
+  <section class="py-8">
+    <h2 class="text-3xl font-heading font-bold text-center mb-10">Pensiones Destacadas</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Dummy cards for visual appeal -->
+      @for (i of [1, 2, 3]; track i) {
+        <div class="card bg-base-200 shadow-xl border border-base-300 hover:-translate-y-2 transition-transform duration-300">
+          <figure><img src="assets/pension-fondo.jpg" alt="Pension Destacada" class="h-48 w-full object-cover" /></figure>
+          <div class="card-body">
+            <h2 class="card-title">Pensión Premium {{ i }} <div class="badge badge-secondary">NEW</div></h2>
+            <p class="opacity-70">Ubicación ideal, ambiente familiar y cupo completo. Excelente para estudiantes.</p>
+            <div class="card-actions justify-end mt-4">
+              <a routerLink="/pensiones" class="btn btn-primary btn-sm">Ver detalles</a>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
   </section>
 
-  <section class="benefits py-5 text-center bg-benefits">
-  <div class="container">
-    <h3 class="benefits-title">¿Por qué elegirnos?</h3>
-    <ul class="benefits-list">
-      <i class="bi bi-search"></i><li>Búsqueda rápida y sencilla</li>
-      <i class="bi bi-calendar-check"></i><li>Reservas 100% seguras</li>
-      <i class="bi bi-person-raised-hand"></i><li>Ideal para estudiantes</li>
-      <i class="bi bi-houses"></i><li>Trato directo con arrendadores</li>
-    </ul>
-  </div>
-</section>
+  <!-- Benefits Section -->
+  <section class="py-16 bg-base-300 rounded-box mt-12 px-8">
+    <h3 class="text-3xl font-heading font-bold text-center mb-12">¿Por qué elegirnos?</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+      <div class="flex flex-col items-center gap-4">
+        <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary text-3xl font-bold">🔍</div>
+        <h4 class="font-bold text-lg">Búsqueda Rápida</h4>
+        <p class="opacity-70 text-sm">Filtros avanzados para encontrar exactamente lo que necesitas.</p>
+      </div>
+      <div class="flex flex-col items-center gap-4">
+        <div class="w-16 h-16 rounded-full bg-secondary/20 flex items-center justify-center text-secondary text-3xl font-bold">🛡️</div>
+        <h4 class="font-bold text-lg">100% Seguro</h4>
+        <p class="opacity-70 text-sm">Tus reservas están protegidas y gestionadas de forma confiable.</p>
+      </div>
+      <div class="flex flex-col items-center gap-4">
+        <div class="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center text-accent text-3xl font-bold">🎓</div>
+        <h4 class="font-bold text-lg">Ideal Estudiantes</h4>
+        <p class="opacity-70 text-sm">Opciones con ambiente familiar perfectas para el estudio.</p>
+      </div>
+      <div class="flex flex-col items-center gap-4">
+        <div class="w-16 h-16 rounded-full bg-info/20 flex items-center justify-center text-info text-3xl font-bold">🤝</div>
+        <h4 class="font-bold text-lg">Trato Directo</h4>
+        <p class="opacity-70 text-sm">Comunícate directamente con los arrendadores sin intermediarios.</p>
+      </div>
+    </div>
+  </section>
+</div>

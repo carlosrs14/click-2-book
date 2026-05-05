@@ -1,110 +1,156 @@
-<div id="hero">
-    <section id="filters">
-        <div id="filter-inputs">
-          <div class="filter-select">
-            <select [(ngModel)]="tipoSeleccionado">
-              <option selected value="0">Todos</option>
-              <option *ngFor="let tipo of tiposPropiedad" [value]="tipo.id">{{tipo.nombre}}</option>
-            </select>
-          </div>
-          <div class="filter-select">
-            <select [(ngModel)]="barrioSeleccionado">
-              <option selected value="0">Todos</option>
-              <option *ngFor="let barrio of barrios" [value]="barrio.id">{{barrio.nombre}}</option>
-            </select>
-          </div>
-          <div class="filter-number">
-            <input type="number" [(ngModel)]="precioMinimo" placeholder="$ mínimo" min="0" />
-          </div>
-          <div class="filter-number">
-            <input type="number" [(ngModel)]="precioMaximo" placeholder="$ máximo" min="{{precioMinimo}}" />
-          </div>
-          <div class="filter-check">
-            <input type="checkbox" [(ngModel)]="cupoCompleto" id="cupoCompleto" />
-            <label for="cupoCompleto">Cupo completo</label>
-          </div>
-          <div class="filter-check">
-            <input type="checkbox" [(ngModel)]="ambienteFamiliar" id="ambienteFamiliar" />
-            <label for="ambienteFamiliar">Ambiente familiar</label>
-          </div>
-          <div class="filter-check">
-            <input type="checkbox" [(ngModel)]="individual" id="individual" />
-            <label for="individual">Individual</label>
-          </div>
-          <div class="filter-check">
-            <input type="checkbox" [(ngModel)]="aire" id="aire" />
-            <label for="aire">Aire acondicionado</label>
-          </div>
+<div class="flex flex-col md:flex-row gap-6 animate-fade-in-up">
+  <!-- Filters Sidebar -->
+  <aside class="w-full md:w-1/4 bg-base-200 p-6 rounded-box shadow-lg h-fit">
+    <h2 class="text-xl font-heading font-bold mb-4">Filtros</h2>
+    
+    <div class="space-y-4">
+      <div class="form-control">
+        <label class="label"><span class="label-text">Tipo de Propiedad</span></label>
+        <select class="select select-bordered select-sm w-full" [ngModel]="tipoSeleccionado()" (ngModelChange)="tipoSeleccionado.set($event)">
+          <option value="0">Todos</option>
+          @for (tipo of tiposPropiedadResource.value(); track tipo.id) {
+            <option [value]="tipo.id">{{tipo.nombre}}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-control">
+        <label class="label"><span class="label-text">Barrio</span></label>
+        <select class="select select-bordered select-sm w-full" [ngModel]="barrioSeleccionado()" (ngModelChange)="barrioSeleccionado.set($event)">
+          <option value="0">Todos</option>
+          @for (barrio of barriosResource.value(); track barrio.id) {
+            <option [value]="barrio.id">{{barrio.nombre}}</option>
+          }
+        </select>
+      </div>
+
+      <div class="flex gap-2">
+        <div class="form-control w-1/2">
+          <input type="number" class="input input-bordered input-sm w-full" placeholder="$ Min" [ngModel]="precioMinimo()" (ngModelChange)="precioMinimo.set($event)">
         </div>
-  
-        <div id="filter-btn">
-          <button type="submit" (click)="filtrarPensiones()">Buscar</button>
-          <button type="reset" (click)="restablecerFiltros()">Restablecer filtros</button>
-        </div>
-    </section>
-  
-  <section id="pensiones">
-    <div *ngFor="let pension of pensiones" class="pension-card">
-      <div class="pension-image-container">
-        <div id="carousel{{ pension.id }}" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner">
-            <div *ngFor="let url of pension.images; let i = index" class="carousel-item" [class.active]="i === 0">
-              <img [src]="url" class="d-block w-100 pension-image" alt="Imagen de pensión"/>
-            </div>
-            <div *ngIf="pension.images.length === 0"class="carousel-item active">
-              <img [src]="imagen" class="d-block w-100 pension-image" alt="Imagen por defecto"/>
-            </div>
-          </div>
-          <button class="carousel-control-prev" type="button" [attr.data-bs-target]="'#carousel' + pension.id" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
-          </button>
-          <button class="carousel-control-next"type="button" [attr.data-bs-target]="'#carousel' + pension.id" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Siguiente</span>
-          </button>
+        <div class="form-control w-1/2">
+          <input type="number" class="input input-bordered input-sm w-full" placeholder="$ Max" [ngModel]="precioMaximo()" (ngModelChange)="precioMaximo.set($event)">
         </div>
       </div>
-      <div class="pension-buttons mt-3 text-center">
-        <p>{{pension.direccion}}</p>
-        <p>{{pension.descripcion}}</p>
-        <button (click)="abrirModal(pension.id)" class="btn btn-success">Reservar</button>
+
+      <div class="form-control">
+        <label class="cursor-pointer label">
+          <span class="label-text">Cupo completo</span>
+          <input type="checkbox" class="checkbox checkbox-sm checkbox-primary" [ngModel]="cupoCompleto()" (ngModelChange)="cupoCompleto.set($event)" />
+        </label>
+      </div>
+      <div class="form-control">
+        <label class="cursor-pointer label">
+          <span class="label-text">Ambiente familiar</span>
+          <input type="checkbox" class="checkbox checkbox-sm checkbox-primary" [ngModel]="ambienteFamiliar()" (ngModelChange)="ambienteFamiliar.set($event)" />
+        </label>
+      </div>
+      <div class="form-control">
+        <label class="cursor-pointer label">
+          <span class="label-text">Individual</span>
+          <input type="checkbox" class="checkbox checkbox-sm checkbox-primary" [ngModel]="individual()" (ngModelChange)="individual.set($event)" />
+        </label>
+      </div>
+      <div class="form-control">
+        <label class="cursor-pointer label">
+          <span class="label-text">Aire acondicionado</span>
+          <input type="checkbox" class="checkbox checkbox-sm checkbox-primary" [ngModel]="aire()" (ngModelChange)="aire.set($event)" />
+        </label>
+      </div>
+
+      <div class="mt-6 flex flex-col gap-2">
+        <button class="btn btn-primary btn-sm w-full" (click)="filtrarPensiones()">Buscar</button>
+        <button class="btn btn-ghost btn-sm w-full" (click)="restablecerFiltros()">Restablecer</button>
       </div>
     </div>
-  </section>
+  </aside>
 
-  <div class="modal" [class.show]="mostrarModal">
-    <div class="modal-content">
-      <h3>Reservar cuartos</h3>
+  <!-- Main Content -->
+  <main class="w-full md:w-3/4">
+    @if (pensionesResource.isLoading()) {
+      <div class="flex justify-center items-center h-64">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    } @else if (pensionesResource.error()) {
+      <div class="alert alert-error shadow-lg">
+        <div>
+          <span>Error al cargar las pensiones.</span>
+        </div>
+      </div>
+    } @else {
+      @if (pensiones().length === 0) {
+        <div class="alert shadow-lg bg-base-200">
+          <div>
+            <span>No se encontraron pensiones con los filtros seleccionados.</span>
+          </div>
+        </div>
+      }
 
-      <label>Fecha inicio:</label>
-      <input type="date" [(ngModel)]="fechaInicio">
+      <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        @for (pension of pensiones(); track pension.id) {
+          <div class="card bg-base-200 shadow-xl border border-base-300 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+            <figure class="px-4 pt-4">
+              @if (pension.images && pension.images.length > 0) {
+                <img [src]="pension.images[0]" alt="Pension" class="rounded-xl h-48 w-full object-cover" />
+              } @else {
+                <img src="assets/pension-fondo.jpg" alt="Pension" class="rounded-xl h-48 w-full object-cover" />
+              }
+            </figure>
+            <div class="card-body">
+              <h2 class="card-title text-lg">{{ pension.direccion }}</h2>
+              <p class="text-sm opacity-80">{{ pension.descripcion }}</p>
+              <div class="card-actions justify-end mt-4">
+                <button class="btn btn-primary btn-sm w-full" (click)="abrirModal(pension.id)">Reservar Cuarto</button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>
 
-      <label>Fecha fin:</label>
-      <input type="date" [(ngModel)]="fechaFin">
-
-      <label>Cantidad de pensionados:</label>
-      <input type="number" [(ngModel)]="cantidadPensionados" min="0">
-
-      <div *ngIf="cuartos.length > 0">
-        <h4 id="cuartos-dispnibles">Cuartos disponibles:</h4>
-        <ul>
-          <li *ngFor="let cuarto of cuartos">{{ cuarto.descripcion }} <button (click)="reservar(cuarto.id)" type="submit">Reservar</button> </li>
-        </ul>
+<!-- Modal for Booking -->
+<dialog class="modal" [class.modal-open]="mostrarModal()">
+  <div class="modal-box bg-base-200">
+    <h3 class="font-bold text-lg mb-4">Reservar cuartos</h3>
+    
+    <div class="space-y-4">
+      <div class="form-control">
+        <label class="label"><span class="label-text">Fecha inicio</span></label>
+        <input type="date" class="input input-bordered" [ngModel]="fechaInicio()" (ngModelChange)="fechaInicio.set($event)">
+      </div>
+      <div class="form-control">
+        <label class="label"><span class="label-text">Fecha fin</span></label>
+        <input type="date" class="input input-bordered" [ngModel]="fechaFin()" (ngModelChange)="fechaFin.set($event)">
+      </div>
+      <div class="form-control">
+        <label class="label"><span class="label-text">Cantidad de pensionados</span></label>
+        <input type="number" class="input input-bordered" min="1" [ngModel]="cantidadPensionados()" (ngModelChange)="cantidadPensionados.set($event)">
       </div>
 
-      <button (click)="cerrarModal()">Cerrar</button>
+      @if (cuartos().length > 0) {
+        <div class="mt-6">
+          <h4 class="font-semibold mb-2">Cuartos disponibles:</h4>
+          <div class="flex flex-col gap-2 max-h-48 overflow-y-auto">
+            @for (cuarto of cuartos(); track cuarto.id) {
+              <div class="flex justify-between items-center bg-base-300 p-3 rounded-lg">
+                <span class="text-sm">{{ cuarto.descripcion }}</span>
+                <button class="btn btn-success btn-xs" (click)="reservar(cuarto.id)" [disabled]="!fechaInicio() || !fechaFin() || cantidadPensionados() < 1">Reservar</button>
+              </div>
+            }
+          </div>
+        </div>
+      } @else {
+        <p class="text-sm opacity-70 italic mt-4">Cargando cuartos o no hay cuartos disponibles...</p>
+      }
+    </div>
+
+    <div class="modal-action">
+      <button class="btn btn-ghost" (click)="cerrarModal()">Cerrar</button>
     </div>
   </div>
-  <div id="paginacion">
-    <div><a href="#" class="pag-prev"><i class="bi bi-arrow-left-short"></i></a></div>
-      <div class="pagina-numeros">
-        <span>1</span>
-        <span class="pagina-activa">2</span>
-        <span>3</span>
-        <span>...</span>
-        <span>10</span>
-      </div>
-      <div><a href="#" class="pag-sig"><i class="bi bi-arrow-right-short"></i></a></div>
-    </div>
-</div> 
+  <form method="dialog" class="modal-backdrop">
+    <button (click)="cerrarModal()">Cerrar</button>
+  </form>
+</dialog>

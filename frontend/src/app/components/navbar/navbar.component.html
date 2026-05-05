@@ -1,16 +1,28 @@
-<header>
-    <nav class="navbar">
-      <div class="logo">
-        <a routerLink="/home">
-          <img src="/assets/icon128px.png" alt="Logo Click2Book" id="icon" />
-          <span>Click2Book</span>
-        </a>
+<div class="navbar bg-base-200 shadow-lg px-4 sm:px-8 mb-4 rounded-box mt-2">
+  <div class="flex-1">
+    <a routerLink="/home" class="btn btn-ghost normal-case text-xl font-heading text-primary gap-2">
+      <img src="favicon.ico" alt="Logo" class="w-8 h-8 rounded-full" />
+      <span>Click2Book</span>
+    </a>
+  </div>
+  <div class="flex-none hidden lg:flex">
+    <ul class="menu menu-horizontal px-1 font-medium gap-2">
+      <li><a routerLink="/home" routerLinkActive="active">Inicio</a></li>
+      <li><a routerLink="/pensiones" routerLinkActive="active">Pensiones</a></li>
+      <li><a routerLink="/reservas" routerLinkActive="active">Reservas</a></li>
+    </ul>
+  </div>
+  <div class="flex-none gap-2">
+    <div class="dropdown dropdown-end">
+      <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+        <div class="w-10 rounded-full bg-primary text-primary-content flex justify-center items-center">
+          <span class="text-lg">U</span>
+        </div>
       </div>
-      <ul class="nav-links">
-        <li><a routerLink="/home"><i class="bi bi-house"></i> Home</a></li>
-        <li><a routerLink="/pensiones"><i class="bi bi-building"></i> Pensiones</a></li>
-        <li><a routerLink="/reservas"><i class="bi bi-bookmark-check"></i> Reservas</a></li>
-        <li><a routerLink="/user"><i class="bi bi-person-circle"></i></a></li>
+      <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-200 rounded-box w-52">
+        <li><a routerLink="/user" class="justify-between">Perfil</a></li>
+        <li><a routerLink="/login">Cerrar sesión</a></li>
       </ul>
-    </nav>
-</header>
+    </div>
+  </div>
+</div>

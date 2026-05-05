@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NgFor, NgIf } from '@angular/common';
 import { PensionService } from '../../services/pensiones/pension.service';
 import { Pension } from '../../models/pension';
 import { FormsModule } from '@angular/forms';
@@ -8,205 +7,153 @@ import { Cuarto } from '../../models/cuarto';
 import { CuartoService } from '../../services/cuartos/cuarto.service';
 import { ReservaService } from '../../services/reservas/reserva.service';
 import { Reserva } from '../../models/reserva';
-import { Barrio } from '../../models/barrio';
-import { TipoPropiedad } from '../../models/tipospropiedad';
 import { LocacionService } from '../../services/locaciones/locacion.service';
 import Swal from 'sweetalert2';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
-	selector: 'app-pensiones',
-	imports: [RouterModule, NgFor, FormsModule, NgIf],
-	standalone: true,
-	templateUrl: './pensiones.component.html',
-	styleUrl: './pensiones.component.css'
+  selector: 'app-pensiones',
+  imports: [RouterModule, FormsModule],
+  standalone: true,
+  templateUrl: './pensiones.component.html',
 })
 export class PensionesComponent {
-	constructor(private servicio: PensionService, private servcioCuarto: CuartoService, private servicioReserva: ReservaService, private servicioLocaciones: LocacionService) {}
-	barrios: Barrio[] = [];
-	tiposPropiedad: TipoPropiedad[] = [];
+  // Filters state (signals)
+  tipoSeleccionado = signal('0');
+  barrioSeleccionado = signal('0');
+  precioMinimo = signal(0);
+  precioMaximo = signal(0);
+  cupoCompleto = signal(false);
+  ambienteFamiliar = signal(false);
+  individual = signal(false);
+  aire = signal(false);
 
-	tipoSeleccionado: string = '';
-	barrioSeleccionado: string = '';
-	precioMinimo: number = 0;
-	precioMaximo: number = 0;
-	cupoCompleto: boolean = false;
-	ambienteFamiliar: boolean = false;
-	individual: boolean = false;
-	aire: boolean = false;
+  mostrarModal = signal(false);
+  cuartos = signal<Cuarto[]>([]);
+  fechaInicio = signal('');
+  fechaFin = signal('');
+  cantidadPensionados = signal(0);
+  idPensionActual = signal(0);
 
-	pensiones: Pension[] = [];
-	cuartos: Cuarto[] = [];
-	mostrarModal: boolean = false;
-	imagen = 'assets/pension-fondo.jpg';
-	userName: string = '';
-	fechaInicio: string = '';
-	fechaFin: string = '';
-	cantidadPensionados: number = 0;
+  // rxResource for metadata
+  barriosResource = rxResource({
+    loader: () => firstValueFrom(this.servicioLocaciones.getBarrios())
+  });
 
-  	ngOnInit(): void {
-		this.userName = localStorage.getItem('nombreUsuario') || 'Visitante';
-		this.servicio.getPensiones().subscribe({
-			next: (response: any[]) => {
-				this.pensiones = []
-				for (const p of response) {
-					const pen = new Pension(
-						p.id,
-						p.user_id,
-						p.esambientefamiliar,
-						p.escupocompleto,
-						p.direccion,
-						"",
-						p.descripcion,
-						p.barrio_id,
-						p.tipopropiedad_id
-					);
-					if (Array.isArray(p.imagenes) && p.imagenes.length > 0) {
-						for (const img of p.imagenes) {
-							pen.addImgen(img.full_url);
-						}
-					}
-					this.pensiones.push(pen);
-				}
-			},
-			error: (error) => {
-				Swal.fire({
-					icon: "error",
-					title: "Oops...",
-					text: "Hubo un error al cargar la pensión",
-				});
-			}
-		});
+  tiposPropiedadResource = rxResource({
+    loader: () => firstValueFrom(this.servicio.getTiposPropiedad())
+  });
 
-		this.servicioLocaciones.getBarrios().subscribe({
-			next: (data) => this.barrios = data,
-			error: () => alert("Error al cargar barrios")
-		});
+  // Filter signal to trigger resource reload
+  filterTrigger = signal(0);
 
-		this.servicio.getTiposPropiedad().subscribe({
-			next: (data) => this.tiposPropiedad = data,
-			error: () => Swal.fire({
-							icon: "error",
-							title: "Oops...",
-							text: "Error al cargar tipos de propiedad",
-						})
-		});
-  	}
-  
-  	buscarCuartos(idPropiedad: number) {
-		this.servcioCuarto.filterByPropiedad(idPropiedad).subscribe({
-			next: (response) => {
-				this.cuartos = response; 
-			},
-			error: (err) => {
-				console.error(err);
-				Swal.fire({
-					icon: "error",
-					title: "Oops...",
-					text: "Error al buscar cuartos",
-				});
-			}
-		});
-  	}
+  // rxResource for fetching pensiones
+  pensionesResource = rxResource({
+    request: () => ({
+      trigger: this.filterTrigger(),
+      tipo: parseInt(this.tipoSeleccionado()),
+      barrio: parseInt(this.barrioSeleccionado()),
+      min: this.precioMinimo(),
+      max: this.precioMaximo(),
+      cupo: this.cupoCompleto(),
+      fam: this.ambienteFamiliar(),
+      ind: this.individual(),
+      aire: this.aire()
+    }),
+    loader: ({ request }) => {
+      if (request.trigger === 0) {
+        return firstValueFrom(this.servicio.getPensiones());
+      } else {
+        return firstValueFrom(
+          this.servicio.filtrarPensiones(
+            request.tipo, request.barrio, request.min, request.max,
+            request.cupo, request.fam, request.ind, request.aire
+          )
+        );
+      }
+    }
+  });
 
-  	filtrarPensiones() {
-		this.pensiones = [];
-		this.servicio.filtrarPensiones(
-			parseInt(this.tipoSeleccionado),
-			parseInt(this.barrioSeleccionado),
-			this.precioMinimo,
-			this.precioMaximo,
-			this.cupoCompleto,
-			this.ambienteFamiliar,
-			this.individual,
-			this.aire
-		).subscribe({
-      		next: (response) => {
-       			 for(let pension of response) {
-          			this.pensiones.push(new Pension(pension.id, pension.user_id, pension.esambientefamiliar, pension.escupocompleto, pension.direccion, "", pension.descripcion, pension.barrio_id, pension.tipopropiedad_id));
-        		}
-      		},
-      		error: (error) => {
-				console.log(error);
-        		Swal.fire({
-					icon: "error",
-					title: "Oops...",
-					text: "Hubo un error al cargar las pensiones filtradas",
-				});
-      		}
-    	});
-  	}
+  // Computed to transform response to Pension objects
+  pensiones = computed(() => {
+    const data = this.pensionesResource.value();
+    if (!data) return [];
 
-  	restablecerFiltros() {
-		this.precioMaximo = 0;
-		this.precioMinimo = 0;
-		
-		this.ambienteFamiliar = false;
-		this.cupoCompleto = false;
-		this.individual = false;
-		this.aire = false;
-  	}
+    return data.map((p: any) => {
+      const pen = new Pension(
+        p.id, p.user_id, p.esambientefamiliar, p.escupocompleto,
+        p.direccion, "", p.descripcion, p.barrio_id, p.tipopropiedad_id
+      );
+      if (Array.isArray(p.imagenes) && p.imagenes.length > 0) {
+        for (const img of p.imagenes) pen.addImgen(img.full_url);
+      }
+      return pen;
+    });
+  });
 
-  	abrirModal(idPension: number) {
-		this.mostrarModal = true;
-		this.cuartos = [];
+  constructor(
+    private servicio: PensionService,
+    private servcioCuarto: CuartoService,
+    private servicioReserva: ReservaService,
+    private servicioLocaciones: LocacionService
+  ) { }
 
-		this.servcioCuarto.filterByPropiedad(idPension).subscribe({
-			next: (response) => {
-				for (let cuarto of response) {
-					this.cuartos.push(new Cuarto(cuarto.id, 0, 0, cuarto.tieneaire, cuarto.descripcion, idPension));
-				}
-			},
-			error: (error) => {
-				Swal.fire({
-					icon: "error",
-					title: "Oops...",
-					text: "Error al cargar los cuartos",
-				});
-			}
-		});
-	}
+  filtrarPensiones() {
+    this.filterTrigger.update(v => v + 1);
+  }
 
-  	cerrarModal() {
-		this.mostrarModal = false;
-		this.fechaInicio = '';
-		this.fechaFin = '';
-		this.cuartos = [];
-  	}
-  
-  	reservar(idCuarto: number) {
-		const idUsuarioStr = localStorage.getItem('idUsuario');
-		if (!idUsuarioStr) {
-			Swal.fire({
-					icon: "error",
-					title: "Oops...",
-					text: "Hubo un error al cargar la pensión",
-				});
-			return;
-		}
-		const idUsuario = parseInt(idUsuarioStr);
-		this.servicioReserva.createReserva(new Reserva(0, idUsuario, idCuarto, this.fechaInicio, this.fechaFin, this.cantidadPensionados)).subscribe({
-			next: (response) => {
-				Swal.fire({
-					title: "Reserva realizada con exito",
-					icon: "success",
-					draggable: true
-				});
-				this.cerrarModal();
-			},
-			error: (error) => {
-				console.log(error);
-				Swal.fire({
-					icon: "error",
-					title: "Oops...",
-					text: "Error al cargar las reservas",
-				});
-			}
-		});
-	}
+  restablecerFiltros() {
+    this.tipoSeleccionado.set('0');
+    this.barrioSeleccionado.set('0');
+    this.precioMinimo.set(0);
+    this.precioMaximo.set(0);
+    this.cupoCompleto.set(false);
+    this.ambienteFamiliar.set(false);
+    this.individual.set(false);
+    this.aire.set(false);
+    this.filterTrigger.set(0);
+  }
+
+  abrirModal(idPension: number) {
+    this.idPensionActual.set(idPension);
+    this.mostrarModal.set(true);
+    this.cuartos.set([]);
+
+    this.servcioCuarto.filterByPropiedad(idPension).subscribe({
+      next: (response) => {
+        const c = response.map((cuarto: any) => new Cuarto(cuarto.id, 0, 0, cuarto.tieneaire, cuarto.descripcion, idPension));
+        this.cuartos.set(c);
+      },
+      error: () => {
+        Swal.fire({ icon: "error", title: "Oops...", text: "Error al cargar los cuartos" });
+      }
+    });
+  }
+
+  cerrarModal() {
+    this.mostrarModal.set(false);
+    this.fechaInicio.set('');
+    this.fechaFin.set('');
+    this.cuartos.set([]);
+  }
+
+  reservar(idCuarto: number) {
+    const idUsuarioStr = localStorage.getItem('idUsuario');
+    if (!idUsuarioStr) {
+      Swal.fire({ icon: "error", title: "Oops...", text: "Debes iniciar sesión para reservar." });
+      return;
+    }
+    const idUsuario = parseInt(idUsuarioStr);
+
+    this.servicioReserva.createReserva(new Reserva(0, idUsuario, idCuarto, this.fechaInicio(), this.fechaFin(), this.cantidadPensionados())).subscribe({
+      next: () => {
+        Swal.fire({ title: "Reserva realizada con éxito", icon: "success" });
+        this.cerrarModal();
+      },
+      error: () => {
+        Swal.fire({ icon: "error", title: "Oops...", text: "Error al realizar la reserva" });
+      }
+    });
+  }
 }
-/*
-{
-	id: 1
-
-}
-*/
