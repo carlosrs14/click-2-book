@@ -38,11 +38,11 @@ export class PensionesComponent {
 
   // rxResource for metadata
   barriosResource = rxResource({
-    loader: () => firstValueFrom(this.servicioLocaciones.getBarrios())
+    loader: () => this.servicioLocaciones.getBarrios()
   });
 
   tiposPropiedadResource = rxResource({
-    loader: () => firstValueFrom(this.servicio.getTiposPropiedad())
+    loader: () => this.servicio.getTiposPropiedad()
   });
 
   // Filter signal to trigger resource reload
@@ -63,21 +63,19 @@ export class PensionesComponent {
     }),
     loader: ({ request }) => {
       if (request.trigger === 0) {
-        return firstValueFrom(this.servicio.getPensiones());
+        return this.servicio.getPensiones();
       } else {
-        return firstValueFrom(
-          this.servicio.filtrarPensiones(
+        return this.servicio.filtrarPensiones(
             request.tipo, request.barrio, request.min, request.max,
             request.cupo, request.fam, request.ind, request.aire
-          )
-        );
+          );
       }
     }
   });
 
   // Computed to transform response to Pension objects
   pensiones = computed(() => {
-    const data = this.pensionesResource.value();
+    const data = this.pensionesResource.value() as any[];
     if (!data) return [];
 
     return data.map((p: any) => {
