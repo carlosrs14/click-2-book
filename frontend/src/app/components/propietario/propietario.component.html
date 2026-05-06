@@ -1,140 +1,171 @@
-<div id="hero" class="main-container">
-	<div class="data-container">
-		<aside class="owner-panel">
-			<div class="owner-header">
-				<h2>Perfil del Propietario</h2>
-			<div id="foto-perfil" class="profile-pic">
-				<img src="/assets/foto-propietario.jpg" alt="Foto del propietario">
-			</div>
-			</div>
+<div class="animate-fade-in-up">
+  <div class="flex flex-col lg:flex-row gap-6">
 
-			<div class="datos-personales">
-				<h3>Datos Personales</h3>
-				<p><strong>Nombre:</strong> {{nombre}}</p>
-				<p *ngFor="let telefono of telefonos">
-					<strong>Teléfono:</strong> {{telefono.numero}}
-				</p>
-			</div>
+    <!-- Owner Sidebar -->
+    <aside class="w-full lg:w-1/3">
+      <div class="card bg-base-200 shadow-xl">
+        <div class="card-body items-center text-center">
+          <div class="avatar placeholder mb-4">
+            <div class="bg-primary text-primary-content rounded-full w-24">
+              <span class="text-3xl">{{ nombre?.charAt(0)?.toUpperCase() }}</span>
+            </div>
+          </div>
+          <h2 class="card-title font-heading text-xl">Perfil del Propietario</h2>
 
-			<div class="estadisticas">
-				<h3>Estadísticas</h3>
-				<ul>
-					<li><strong>Pensiones activas:</strong> {{ pensiones.length }}</li>
-					<li><strong>Tiempo usando la app:</strong> {{ tiempo }}</li>
-					<li><strong>Reservas este mes:</strong> {{reservas.length}}</li>
-				</ul>
-			</div>
-		</aside>
-		<div class="owner-content">
-			<h4 id="h4-mis-pensiones">Mis Pensiones</h4>
-			<section id="pensiones" class="pensiones-list">
-				<div class="pension-card" *ngFor="let pension of pensiones">
-					<h5 class="pension-id">ID: {{ pension.id }}</h5>
-					<span *ngIf="pension.esAmbienteFamiliar" class="item-pension">Ambiente familiar</span>
-					<span *ngIf="pension.esCupoCompleto" class="item-pension">Cupo completo</span>
-					<!-- <span class="item-pension">{{ pension.tipo }}</span> -->
-					<p class="pension-descripcion">{{ pension.descripcion }}</p>
-					<p class="pension-direccion">{{ pension.direccion }}</p>
-					<div class="btn-pension">
-						<i (click)="infoPension(pension.id)" class="bi bi-info-circle"></i>
-						<i (click)="editPension(pension)" class="bi bi-pencil-square"></i>
-						<i (click)="deletePension(pension.id)" class="bi bi-trash"></i>
-					</div>
-				</div>
-			</section>
-		</div>
-	</div>
-	<div class="modal" [class.show]="isEditing && pensionSelected">
-		<div class="modal-content">
-			<div class="input-modal">
-				<h2>Editar pension</h2>
-				<div class="field">
-					<label for="cupocompleto">Cupo completo</label>
-					<input [(ngModel)]="pensionSelected.esCupoCompleto" name="cupocompleto" type="checkbox">
-				</div>
-				<div class="field">
-					<label for="ambientefamiliar">Ambiente Familiar</label>
-					<input [(ngModel)]="pensionSelected.esAmbienteFamiliar" name="ambientefamiliar" type="checkbox">
-				</div>
-				<div class="field">
-					<label for="descripcion">Descripcion</label>
-					<textarea [(ngModel)]="pensionSelected.descripcion" name="descripcion" rows="4" cols="50" required></textarea>
-				</div>
-			</div>
-			<div class="btn-modal">
-				<button (click)="guardarCambios()">Guardar</button>
-				<button (click)="cancelarCambios()">Cancelar</button>
-			</div>
-		</div>
-	</div>
-	<div class="modal" [class.show]="isAdding">
-  		<div class="modal-content">
-			<div class="input-modal">
-				<h2>Nueva pensión</h2>
-				<div class="field">
-					<label for="">Cupo completo? </label>
-					<input [(ngModel)]="newPension.esCupoCompleto" name="cupoCompleto" type="checkbox">
-				</div>
-				<div class="field">
-					<label for="">Ambiente familiar? </label>
-					<input [(ngModel)]="newPension.esAmbienteFamiliar" name="ambienteFamiliar" type="checkbox">
-				</div>
-				<div class="field">
-					<label for="descripcion">Descripción: </label>
-					<textarea [(ngModel)]="newPension.descripcion" name="descripcion" rows="4" cols="50" required></textarea>
-				</div>
-				<div class="field">
-					<label for="ciudad">Ciudad: </label>
-					<select
-						[(ngModel)]="idCiudad"
-						name="ciudad"
-						required
-						(change)="cargarBarrios(idCiudad)"
-					>
-						<option [ngValue]="0">Selecciona ciudad</option>
-						<option *ngFor="let ciudad of ciudades" [ngValue]="ciudad.id">{{ ciudad.nombre }}</option>
-    				</select>
-				</div>
-				<div class="field">
-					<label for="barrio">Barrio:</label>
-					<select
-						[(ngModel)]="newPension.barrio_id"
-						name="barrio"
-						required
-						[disabled]="!barrios.length"
-					>
-						<option [ngValue]="0">Selecciona barrio</option>
-						<option *ngFor="let barrio of barrios" [ngValue]="barrio.id">{{ barrio.nombre }}</option>
-					</select>
-				</div>
-				<div class="field">
-					<label for="tipopropiedad">Tipo de propiedad:</label>
-					<select
-						[(ngModel)]="newPension.tipopropiedad_id"
-						name="barrio"
-						required
-						[disabled]="!tiposdePropiedad.length"
-					>
-						<option [ngValue]="0">Selecciona</option>
-						<option *ngFor="let tipo of tiposdePropiedad" [ngValue]="tipo.id">{{ tipo.nombre }}</option>
-					</select>
-				</div>
-				<div class="field">
-					<label for="direccion">Direccion:</label>
-					<input [(ngModel)]="newPension.direccion" name="direccion" type="textarea" required>
-				</div>
-				<div class="btn-modal">
-					<button type="submit" (click)="guardarNuevo()">Guardar</button>
-					<button type="submit" (click)="isAdding = false">Cancelar</button>
-					
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="btn-container">
-		<div class="agregar_pension" (click)="abrirModalAdding()" >
-			<p>Añadir pension</p>
-			<i class="bi bi-house-add"></i>
-		</div>
-	</div>
+          <div class="divider my-2"></div>
+
+          <div class="w-full text-left space-y-2">
+            <h3 class="font-semibold text-sm opacity-70 uppercase tracking-wider">Datos Personales</h3>
+            <p><strong>Nombre:</strong> {{ nombre }}</p>
+            <p *ngFor="let telefono of telefonos">
+              <strong>Teléfono:</strong> {{ telefono.numero }}
+            </p>
+          </div>
+
+          <div class="divider my-2"></div>
+
+          <div class="w-full text-left">
+            <h3 class="font-semibold text-sm opacity-70 uppercase tracking-wider mb-2">Estadísticas</h3>
+            <div class="stats stats-vertical shadow w-full bg-base-300">
+              <div class="stat py-2">
+                <div class="stat-title text-xs">Pensiones activas</div>
+                <div class="stat-value text-lg text-primary">{{ pensiones.length }}</div>
+              </div>
+              <div class="stat py-2">
+                <div class="stat-title text-xs">Tiempo usando la app</div>
+                <div class="stat-value text-lg">{{ tiempo }}</div>
+              </div>
+              <div class="stat py-2">
+                <div class="stat-title text-xs">Reservas este mes</div>
+                <div class="stat-value text-lg text-secondary">{{ reservas.length }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="w-full lg:w-2/3">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-heading font-bold">Mis Pensiones</h2>
+        <button class="btn btn-primary btn-sm gap-2" (click)="abrirModalAdding()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          Añadir pensión
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div *ngFor="let pension of pensiones" class="card bg-base-200 shadow-lg border border-base-300 hover:shadow-xl transition-all duration-300">
+          <div class="card-body p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="card-title text-base">Pensión #{{ pension.id }}</h3>
+              <div class="flex gap-1">
+                <button class="btn btn-ghost btn-xs btn-circle" (click)="infoPension(pension.id)" title="Info">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                </button>
+                <button class="btn btn-ghost btn-xs btn-circle" (click)="editPension(pension)" title="Editar">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                </button>
+                <button class="btn btn-ghost btn-xs btn-circle text-error" (click)="deletePension(pension.id)" title="Eliminar">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1 mt-1">
+              <span *ngIf="pension.esAmbienteFamiliar" class="badge badge-secondary badge-sm">Ambiente familiar</span>
+              <span *ngIf="pension.esCupoCompleto" class="badge badge-accent badge-sm">Cupo completo</span>
+            </div>
+            <p class="text-sm opacity-80 mt-2">{{ pension.descripcion }}</p>
+            <p class="text-xs opacity-60">{{ pension.direccion }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Pension Modal -->
+  <dialog class="modal" [class.modal-open]="isEditing && pensionSelected">
+    <div class="modal-box bg-base-200">
+      <h3 class="font-bold text-lg mb-4">Editar pensión</h3>
+      <div class="space-y-4">
+        <div class="form-control">
+          <label class="cursor-pointer label">
+            <span class="label-text">Cupo completo</span>
+            <input [(ngModel)]="pensionSelected.esCupoCompleto" name="cupocompleto" type="checkbox" class="checkbox checkbox-primary" />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="cursor-pointer label">
+            <span class="label-text">Ambiente Familiar</span>
+            <input [(ngModel)]="pensionSelected.esAmbienteFamiliar" name="ambientefamiliar" type="checkbox" class="checkbox checkbox-primary" />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="label"><span class="label-text">Descripción</span></label>
+          <textarea [(ngModel)]="pensionSelected.descripcion" name="descripcion" class="textarea textarea-bordered" rows="3" required></textarea>
+        </div>
+      </div>
+      <div class="modal-action">
+        <button (click)="guardarCambios()" class="btn btn-primary btn-sm">Guardar</button>
+        <button (click)="cancelarCambios()" class="btn btn-ghost btn-sm">Cancelar</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button (click)="cancelarCambios()">close</button></form>
+  </dialog>
+
+  <!-- Add Pension Modal -->
+  <dialog class="modal" [class.modal-open]="isAdding">
+    <div class="modal-box bg-base-200">
+      <h3 class="font-bold text-lg mb-4">Nueva pensión</h3>
+      <div class="space-y-4">
+        <div class="form-control">
+          <label class="cursor-pointer label">
+            <span class="label-text">Cupo completo?</span>
+            <input [(ngModel)]="newPension.esCupoCompleto" name="cupoCompleto" type="checkbox" class="checkbox checkbox-primary" />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="cursor-pointer label">
+            <span class="label-text">Ambiente familiar?</span>
+            <input [(ngModel)]="newPension.esAmbienteFamiliar" name="ambienteFamiliar" type="checkbox" class="checkbox checkbox-primary" />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="label"><span class="label-text">Descripción</span></label>
+          <textarea [(ngModel)]="newPension.descripcion" name="descripcion" class="textarea textarea-bordered" rows="3" required></textarea>
+        </div>
+        <div class="form-control">
+          <label class="label"><span class="label-text">Ciudad</span></label>
+          <select [(ngModel)]="idCiudad" name="ciudad" (change)="cargarBarrios(idCiudad)" class="select select-bordered w-full" required>
+            <option [ngValue]="0">Selecciona ciudad</option>
+            <option *ngFor="let ciudad of ciudades" [ngValue]="ciudad.id">{{ ciudad.nombre }}</option>
+          </select>
+        </div>
+        <div class="form-control">
+          <label class="label"><span class="label-text">Barrio</span></label>
+          <select [(ngModel)]="newPension.barrio_id" name="barrio" class="select select-bordered w-full" [disabled]="!barrios.length" required>
+            <option [ngValue]="0">Selecciona barrio</option>
+            <option *ngFor="let barrio of barrios" [ngValue]="barrio.id">{{ barrio.nombre }}</option>
+          </select>
+        </div>
+        <div class="form-control">
+          <label class="label"><span class="label-text">Tipo de propiedad</span></label>
+          <select [(ngModel)]="newPension.tipopropiedad_id" name="tipopropiedad" class="select select-bordered w-full" [disabled]="!tiposdePropiedad.length" required>
+            <option [ngValue]="0">Selecciona</option>
+            <option *ngFor="let tipo of tiposdePropiedad" [ngValue]="tipo.id">{{ tipo.nombre }}</option>
+          </select>
+        </div>
+        <div class="form-control">
+          <label class="label"><span class="label-text">Dirección</span></label>
+          <input [(ngModel)]="newPension.direccion" name="direccion" type="text" class="input input-bordered w-full" required />
+        </div>
+      </div>
+      <div class="modal-action">
+        <button type="submit" (click)="guardarNuevo()" class="btn btn-primary btn-sm">Guardar</button>
+        <button type="button" (click)="isAdding = false" class="btn btn-ghost btn-sm">Cancelar</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button (click)="isAdding = false">close</button></form>
+  </dialog>
 </div>
