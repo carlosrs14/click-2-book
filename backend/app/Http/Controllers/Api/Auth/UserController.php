@@ -5,29 +5,32 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Services\UserService;
+use App\Services\AuthService;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller {
+    protected $userService;
+    protected $authService;
+
+    public function __construct(UserService $userService, AuthService $authService)
+    {
+        $this->userService = $userService;
+        $this->authService = $authService;
+    }
+
     public function login(Request $request) {
         $credentials = $request->only('email', 'password');
-        if (!$token = JWTAuth::attempt($credentials)) {
+        
+        $token = $this->authService->login($credentials);
+        
+        if (!$token) {
             return response()->json(['message' => 'Credenciales inválidas'], 401);
         }
-        $user = JWTAuth::user();
-        // se debe hacer la insersion en la tabla de especializacion
         
-        return response()->json([
-            'mensaje' => 'Login exitoso',
-            'user_id' => $user->id,
-            'user_name' => $user->name,
-            'user_email' => $user->email,
-            'rol' => $user->rol()->first()->nombre,
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60
-            
-        ]);
+        return response()->json(
+            $this->authService->respondWithToken($token, JWTAuth::user(), 'Login exitoso')
+        );
     }
 
     public function register(Request $request) {
@@ -38,33 +41,21 @@ class UserController extends Controller {
             'rol_id' => 'required',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'rol_id' => $request->rol_id,
-        ]);
-
+        $user = $this->userService->createUser($request->all());
         $token = JWTAuth::fromUser($user);
 
-        return response()->json([
-            'mensaje' => 'Usuario registrado con éxito',
-            'user_id' => $user->id,
-            'user_name' => $user->name,
-            'user_email' => $user->email,
-            'rol' => $user->rol()->first()->nombre,
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60
-        ]);
+        return response()->json(
+            $this->authService->respondWithToken($token, $user, 'Usuario registrado con éxito')
+        );
     }
 
     public function all() {
-        return User::all();
+        // We could load roles eagerly
+        return User::with('roles')->get();
     }
 
     public function get($id) {
-        $user = User::find($id);
+        $user = User::with('roles')->find($id);
         if (!$user) {
             return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
         }
@@ -79,12 +70,12 @@ class UserController extends Controller {
 
         $validated = $request->validate([
             'name' => 'string|max:255',
-            'email' => 'email|unique:users,email,',
+            'email' => 'email|unique:users,email,' . $id,
+            'rol_id' => 'sometimes|exists:roles,id',
         ]);
 
-        $user->name = $validated['name'] ?? $user->name;
-        $user->email = $validated['email'] ?? $user->email;
-        $user->save();
+        $this->userService->updateUser($user, $validated);
+
         return response()->json(['mensaje' => 'Usuario actualizado']);
     }
 
@@ -93,7 +84,9 @@ class UserController extends Controller {
         if (!$user) {
             return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
         }
-        $user->delete();
+        
+        $this->userService->deleteUser($user);
+        
         return response()->json(['mensaje' => 'Usuario borrado']);
     }
 }

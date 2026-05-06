@@ -25,7 +25,6 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         'name',
         'email',
         'password',
-        'rol_id',
     ];
 
     /**
@@ -99,7 +98,7 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         return $this->hasMany(Review::class);
     }
     
-    public function rol() {
-        return $this->belongsTo(Rol::class);
+    public function roles() {
+        return $this->belongsToMany(Rol::class, 'role_user', 'user_id', 'rol_id');
     }
 }

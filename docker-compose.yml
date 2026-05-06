@@ -30,7 +30,6 @@ services:
     volumes:
       - ./backend:/var/www/html
       - /var/www/html/vendor
-      - ./.env:/var/www/html/.env
     depends_on:
       db:
         condition: service_healthy

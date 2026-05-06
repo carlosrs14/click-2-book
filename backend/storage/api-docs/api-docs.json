@@ -1,0 +1,27 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Click2Book API Documentation",
+        "description": "Swagger OpenApi description for Click2Book Backend",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "Backend API Server"
+        }
+    ],
+    "paths": {
+        "/api/health": {
+            "get": {
+                "description": "Health check endpoint",
+                "operationId": "5b1a414515fa4e8106e72f6aac552d48",
+                "responses": {
+                    "200": {
+                        "description": "API is working"
+                    }
+                }
+            }
+        }
+    }
+}

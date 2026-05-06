@@ -24,8 +24,3 @@ Esto levantará 3 contenedores:
 
 - **Frontend:** [http://localhost](http://localhost)
 - **Backend API:** [http://localhost:8000/api](http://localhost:8000/api)
-
-## Notas
-
-- Las rutas del API han sido aseguradas con autenticación JWT.
-- El frontend usa Angular 19 (`signals`, `rxResource`) y está estilizado con **TailwindCSS** + **DaisyUI**.
