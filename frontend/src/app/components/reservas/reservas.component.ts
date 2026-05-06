@@ -8,7 +8,6 @@ import Swal from 'sweetalert2';
   selector: 'app-reservas',
   imports: [NgFor],
   templateUrl: './reservas.component.html',
-  styleUrl: './reservas.component.css'
 })
 export class ReservasComponent {
 

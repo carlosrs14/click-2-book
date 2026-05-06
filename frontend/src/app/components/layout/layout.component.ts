@@ -7,7 +7,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-layout',
   imports: [NavbarComponent, FooterComponent, RouterOutlet],
   templateUrl: './layout.component.html',
-  styleUrl: './layout.component.css'
 })
 export class LayoutComponent {
 

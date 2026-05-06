@@ -15,7 +15,6 @@ import Swal from 'sweetalert2';
     selector: 'app-pension',
     imports: [NgIf, NgFor, FormsModule],
     templateUrl: './pension.component.html',
-    styleUrl: './pension.component.css'
 })
 export class PensionComponent {
 	pension: Pension = new Pension(0, 0, false, false, "", "", "", 0, 0);

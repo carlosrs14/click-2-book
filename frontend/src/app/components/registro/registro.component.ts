@@ -10,7 +10,6 @@ import Swal from 'sweetalert2';
   imports: [FormsModule],
   standalone: true,
   templateUrl: './registro.component.html',
-  styleUrl: './registro.component.css'
 })
 export class RegistroComponent {
   nombre: string = '';

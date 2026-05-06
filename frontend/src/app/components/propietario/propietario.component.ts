@@ -17,7 +17,6 @@ import Swal from 'sweetalert2';
   selector: 'app-propietario',
   imports: [FormsModule, NgFor, NgIf],
   templateUrl: './propietario.component.html',
-  styleUrl: './propietario.component.css'
 })
 export class PropietarioComponent {
 

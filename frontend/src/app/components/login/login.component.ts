@@ -10,7 +10,6 @@ import Swal from 'sweetalert2';
   imports: [FormsModule, RouterModule],
   standalone: true,
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
 })
 export class LoginComponent {
   email: string = '';

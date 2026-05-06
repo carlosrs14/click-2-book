@@ -9,7 +9,6 @@ import Swal from 'sweetalert2';
   selector: 'app-user',
   imports: [RouterLink, FormsModule, NgIf],
   templateUrl: './user.component.html',
-  styleUrl: './user.component.css'
 })
 
 export class UserComponent {
